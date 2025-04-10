@@ -1,0 +1,52 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+## No Hardcoding Rule
+
+### Theming and Styling
+
+- **Never hardcode colors directly in component files**
+  - Always import and use colors from the theme system via `useThemeColor` hook
+  - Example: `const backgroundColor = useThemeColor({}, 'background')` instead of `backgroundColor: '#121212'`
+
+- **Use theme-aware components**
+  - Prefer `ThemedText` and `ThemedView` over basic `Text` and `View` components when styling is needed
+  - Pass light/dark variants through props rather than conditional statements
+
+- **Centralize style constants**
+  - Define all colors in the `constants/Colors.ts` file
+  - Define reusable spacing, sizing, and typography in dedicated constants files
+  - Use semantic color names (e.g., 'primaryButton' rather than 'blue')
+
+- **Dynamic styling approach**
+  - Use style arrays with conditional styles: `[styles.base, condition && styles.active]`
+  - Apply dynamic theme values via style arrays: `[styles.container, { backgroundColor }]`
+
+### Best Practices
+
+- **Use platform-specific values via Platform API**
+  - Example: `const padding = Platform.OS === 'ios' ? 10 : 16`
+  - Consider creating platform-specific style helper functions for complex differences
+
+- **Safe area handling**
+  - Always use `useSafeAreaInsets()` for edge spacing rather than fixed values
+  - Apply dynamic inset-based padding: `paddingTop: insets.top`
+
+- **Responsive dimensions**
+  - Use percentages, flex, or window dimensions rather than fixed pixel values
+  - Make UI elements adapt to different screen sizes
+
+- **Accessibility considerations**
+  - Scale font sizes relative to user's system settings
+  - Ensure proper contrast ratios between text and backgrounds
+
+### Implementation Strategy
+
+1. Extract repeated values to constants
+2. Use the theme system for all visual styling
+3. Create reusable styled components for common patterns
+4. Implement responsive design principles throughout the app
+
+Keep all visual aspects of the app adaptable to theme changes and user preferences. 

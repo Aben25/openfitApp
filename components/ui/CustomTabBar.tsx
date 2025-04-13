@@ -41,8 +41,7 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
           style={[styles.addButton, { backgroundColor: primaryColor }]}
           onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            console.log('Add button pressed');
-            // Add your custom logic for the button
+            navigation.navigate('create-workout');
           }}
         >
           <Ionicons name="add" size={30} color="#FFFFFF" />

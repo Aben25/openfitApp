@@ -1,85 +1,75 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '../ThemedText';
 import { useAssessment } from '@/context/AssessmentContext';
+import { assessmentStyles, assessmentColors, spacing, typography } from '../ui/AssessmentStyles';
 
 interface AssessmentHeaderProps {
   title: string;
+  subtitle?: string;
   showBackButton?: boolean;
   showProgressIndicator?: boolean;
+  onBackPress?: () => void;
 }
 
 export function AssessmentHeader({
   title,
+  subtitle,
   showBackButton = true,
-  showProgressIndicator = true
+  showProgressIndicator = true,
+  onBackPress
 }: AssessmentHeaderProps) {
-  const router = useRouter();
   const { currentStep, totalSteps, prevStep } = useAssessment();
 
   const handleBack = () => {
-    prevStep();
+    if (onBackPress) {
+      onBackPress();
+    } else {
+      prevStep();
+    }
   };
 
+  // Ensure currentStep and totalSteps are strings to avoid "Objects are not valid as a React child" error
+  const currentStepText = typeof currentStep === 'number' ? String(currentStep) : '1';
+  const totalStepsText = typeof totalSteps === 'number' ? String(totalSteps) : '17';
+
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <View style={{
+      paddingHorizontal: spacing.lg,
+      paddingTop: spacing.md,
+      paddingBottom: spacing.lg,
+    }}>
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: spacing.lg,
+      }}>
         {showBackButton && (
-          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
+          <TouchableOpacity
+            onPress={handleBack}
+            style={assessmentStyles.backButton}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="chevron-back" size={24} color={assessmentColors.text} />
           </TouchableOpacity>
         )}
-        
+
         {showProgressIndicator && (
-          <View style={styles.progressIndicator}>
-            <ThemedText style={styles.progressText}>
-              {currentStep} of {totalSteps}
+          <View style={assessmentStyles.progressIndicator}>
+            <ThemedText style={assessmentStyles.progressText}>
+              {currentStepText} of {totalStepsText}
             </ThemedText>
           </View>
         )}
       </View>
-      
-      <ThemedText style={styles.title}>{title}</ThemedText>
+
+      <ThemedText style={assessmentStyles.screenTitle}>{title}</ThemedText>
+
+      {subtitle && (
+        <ThemedText style={assessmentStyles.subtitle}>{subtitle}</ThemedText>
+      )}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 24,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  backButton: {
-    borderRadius: 20,
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#222',
-  },
-  progressIndicator: {
-    backgroundColor: '#1C1C1E',
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 20,
-  },
-  progressText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#FFFFFF',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-}); 

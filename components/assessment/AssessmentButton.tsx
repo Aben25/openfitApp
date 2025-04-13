@@ -1,22 +1,25 @@
 import React from 'react';
-import { 
-  TouchableOpacity, 
-  StyleSheet, 
-  ActivityIndicator, 
+import {
+  TouchableOpacity,
+  ActivityIndicator,
   View,
   StyleProp,
-  ViewStyle 
+  ViewStyle,
+  TextStyle
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '../ThemedText';
+import { assessmentStyles, assessmentColors, spacing } from '../ui/AssessmentStyles';
 
 interface AssessmentButtonProps {
   title: string;
   onPress: () => void;
   isLoading?: boolean;
   disabled?: boolean;
-  icon?: string;
+  icon?: keyof typeof Ionicons.glyphMap;
   style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
+  variant?: 'primary' | 'secondary' | 'outline';
 }
 
 export function AssessmentButton({
@@ -25,13 +28,32 @@ export function AssessmentButton({
   isLoading = false,
   disabled = false,
   icon,
-  style
+  style,
+  textStyle,
+  variant = 'primary'
 }: AssessmentButtonProps) {
+  // Determine button style based on variant
+  const getButtonStyle = () => {
+    switch (variant) {
+      case 'secondary':
+        return { backgroundColor: assessmentColors.secondary };
+      case 'outline':
+        return {
+          backgroundColor: 'transparent',
+          borderWidth: 1,
+          borderColor: assessmentColors.primary
+        };
+      default:
+        return { backgroundColor: assessmentColors.primary };
+    }
+  };
+
   return (
     <TouchableOpacity
       style={[
-        styles.button,
-        disabled && styles.disabledButton,
+        assessmentStyles.continueButton,
+        getButtonStyle(),
+        disabled && assessmentStyles.continueButtonDisabled,
         style
       ]}
       onPress={onPress}
@@ -39,19 +61,22 @@ export function AssessmentButton({
       activeOpacity={0.8}
     >
       {isLoading ? (
-        <ActivityIndicator size="small" color="#FFFFFF" />
+        <ActivityIndicator size="small" color={assessmentColors.text} />
       ) : (
-        <View style={styles.buttonContent}>
-          <ThemedText style={styles.buttonText}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+          <ThemedText style={[
+            assessmentStyles.continueButtonText,
+            textStyle
+          ]}>
             {title}
           </ThemedText>
-          
+
           {icon && (
-            <Ionicons 
-              name={icon as any} 
-              size={22} 
-              color="#FFFFFF" 
-              style={styles.buttonIcon} 
+            <Ionicons
+              name={icon}
+              size={22}
+              color={assessmentColors.text}
+              style={{ marginLeft: spacing.sm }}
             />
           )}
         </View>
@@ -60,55 +85,28 @@ export function AssessmentButton({
   );
 }
 
-export function SkipButton({ onPress }: { onPress: () => void }) {
+interface SkipButtonProps {
+  onPress: () => void;
+  text?: string;
+}
+
+export function SkipButton({
+  onPress,
+  text = 'Prefer to skip, thanks!'
+}: SkipButtonProps) {
   return (
-    <TouchableOpacity style={styles.skipButton} onPress={onPress}>
-      <ThemedText style={styles.skipText}>Prefer to skip, thanks!</ThemedText>
-      <Ionicons name="close" size={18} color="#FFFFFF" style={styles.skipIcon} />
+    <TouchableOpacity
+      style={assessmentStyles.skipButton}
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <ThemedText style={assessmentStyles.skipText}>{text}</ThemedText>
+      <Ionicons
+        name="close"
+        size={18}
+        color={assessmentColors.text}
+        style={{ opacity: 0.8 }}
+      />
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  button: {
-    paddingVertical: 18,
-    borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FF8C42',
-  },
-  disabledButton: {
-    opacity: 0.5,
-  },
-  buttonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  buttonIcon: {
-    marginLeft: 8,
-  },
-  skipButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    marginBottom: 16,
-    borderRadius: 12,
-    backgroundColor: 'rgba(255, 59, 48, 0.2)',
-  },
-  skipText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '500',
-    marginRight: 8,
-  },
-  skipIcon: {
-    opacity: 0.8,
-  }
-}); 

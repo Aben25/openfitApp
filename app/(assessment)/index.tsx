@@ -1,270 +1,110 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, TouchableOpacity, ScrollView, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/ThemedText';
+import { AssessmentButton } from '@/components/assessment/AssessmentButton';
+import { assessmentColors, spacing } from '@/components/ui/AssessmentStyles';
 import { useAssessment } from '@/context/AssessmentContext';
-import Colors from '@/constants/Colors';
+import { Ionicons } from '@expo/vector-icons';
 
-interface FitnessGoal {
-  id: string;
-  title: string;
-  image: string;
-}
+export default function AssessmentWelcome() {
+  const router = useRouter();
+  const { nextStep } = useAssessment();
 
-const fitnessGoals: FitnessGoal[] = [
-  {
-    id: 'lose_weight',
-    title: 'Lose Weight',
-    image: 'https://images.unsplash.com/photo-1487956382158-bb926046304a?q=80&w=500'
-  },
-  {
-    id: 'build_muscle',
-    title: 'Build Muscle',
-    image: 'https://images.unsplash.com/photo-1534367990512-edbdca781b00?q=80&w=500'
-  },
-  {
-    id: 'increase_strength',
-    title: 'Increase Strength',
-    image: 'https://images.unsplash.com/photo-1585152968992-d2b9444408cc?q=80&w=500'
-  },
-  {
-    id: 'improve_fitness',
-    title: 'Improve Fitness',
-    image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?q=80&w=500'
-  },
-  {
-    id: 'improve_health',
-    title: 'Improve Health',
-    image: 'https://images.unsplash.com/photo-1505944357431-27579db47ad1?q=80&w=500'
-  }
-];
-
-export default function FitnessGoalScreen() {
-  const { data, updateField, nextStep } = useAssessment();
-  const [selectedGoal, setSelectedGoal] = useState<string | null>(data.fitness_goal || null);
-
-  const handleSelectGoal = (goalId: string) => {
-    setSelectedGoal(goalId);
-    updateField('fitness_goal', goalId);
-  };
-
-  const handleContinue = () => {
-    if (selectedGoal) {
-      nextStep();
-    }
-  };
-
-  const handleSkip = () => {
-    updateField('fitness_goal', null);
-    nextStep();
+  const handleStart = () => {
+    router.push('/(assessment)/about-you');
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.progressIndicator}>
-        <ThemedText style={styles.progressText}>1 of 17</ThemedText>
-      </View>
-      
-      <ScrollView
-        style={styles.scrollContainer}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
-      >
-        <ThemedText style={styles.screenTitle}>
-          What is your primary fitness goal?
-        </ThemedText>
-        
-        <View style={styles.goalsContainer}>
-          {fitnessGoals.map((goal) => (
-            <TouchableOpacity
-              key={goal.id}
-              style={[
-                styles.goalOption,
-                selectedGoal === goal.id && styles.selectedOption
-              ]}
-              onPress={() => handleSelectGoal(goal.id)}
-              activeOpacity={0.8}
-            >
-              <View style={styles.goalInfo}>
-                <ThemedText style={styles.goalText}>{goal.title}</ThemedText>
-              </View>
-              
-              <Image
-                source={{ uri: goal.image }}
-                style={styles.goalImage}
-                resizeMode="cover"
-              />
-              
-              <View style={styles.radioContainer}>
-                <View style={[
-                  styles.radioOuter,
-                  selectedGoal === goal.id && styles.radioOuterSelected
-                ]}>
-                  {selectedGoal === goal.id && (
-                    <View style={styles.radioInner} />
-                  )}
-                </View>
-              </View>
-            </TouchableOpacity>
-          ))}
+    <SafeAreaView style={styles.container}>
+      <View style={styles.content}>
+        <View style={styles.iconContainer}>
+          <Ionicons name="fitness-outline" size={80} color={assessmentColors.primary} />
         </View>
         
-        <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-          <ThemedText style={styles.skipText}>Prefer to skip, thanks!</ThemedText>
-          <Ionicons name="close" size={18} color="#FFFFFF" style={styles.skipIcon} />
-        </TouchableOpacity>
-      </ScrollView>
+        <ThemedText style={styles.title}>
+          Welcome to Your Fitness Assessment
+        </ThemedText>
+        
+        <ThemedText style={styles.description}>
+          Let's create a personalized fitness plan just for you. We'll ask a few questions to understand your goals and preferences.
+        </ThemedText>
+        
+        <View style={styles.bulletPoints}>
+          <View style={styles.bulletPoint}>
+            <Ionicons name="checkmark-circle" size={24} color={assessmentColors.primary} />
+            <ThemedText style={styles.bulletText}>Personalized workout plans</ThemedText>
+          </View>
+          
+          <View style={styles.bulletPoint}>
+            <Ionicons name="checkmark-circle" size={24} color={assessmentColors.primary} />
+            <ThemedText style={styles.bulletText}>Tailored to your fitness level</ThemedText>
+          </View>
+          
+          <View style={styles.bulletPoint}>
+            <Ionicons name="checkmark-circle" size={24} color={assessmentColors.primary} />
+            <ThemedText style={styles.bulletText}>Track your progress over time</ThemedText>
+          </View>
+        </View>
+      </View>
       
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[
-            styles.continueButton,
-            !selectedGoal && styles.continueButtonDisabled
-          ]}
-          onPress={handleContinue}
-          disabled={!selectedGoal}
-          activeOpacity={0.8}
-        >
-          <ThemedText style={styles.continueButtonText}>Continue</ThemedText>
-          <Ionicons name="arrow-forward" size={20} color="#FFFFFF" />
-        </TouchableOpacity>
+        <AssessmentButton
+          title="Start Assessment"
+          onPress={handleStart}
+          icon="arrow-forward"
+        />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
+    backgroundColor: assessmentColors.background,
   },
-  progressIndicator: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    backgroundColor: 'rgba(59, 89, 152, 0.7)',
-    borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    zIndex: 10,
-  },
-  progressText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  scrollContainer: {
+  content: {
     flex: 1,
-    paddingTop: 60,
-  },
-  scrollContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 100,
-  },
-  screenTitle: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 40,
-    textAlign: 'center',
-  },
-  goalsContainer: {
-    marginBottom: 24,
-  },
-  goalOption: {
-    position: 'relative',
-    backgroundColor: '#1C1C1E',
-    borderRadius: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#1C1C1E',
-    overflow: 'hidden',
-  },
-  selectedOption: {
-    borderColor: '#FF8C42',
-    backgroundColor: 'rgba(255, 140, 66, 0.1)',
-  },
-  goalInfo: {
-    padding: 16,
-    zIndex: 2,
-  },
-  goalText: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#FFFFFF',
-  },
-  goalImage: {
-    width: '100%',
-    height: 160,
-    zIndex: 1,
-    opacity: 0.8,
-  },
-  radioContainer: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    zIndex: 3,
-  },
-  radioOuter: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#4A4A4A',
-    justifyContent: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.xxl,
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    justifyContent: 'center',
   },
-  radioOuterSelected: {
-    borderColor: '#FF8C42',
+  iconContainer: {
+    marginBottom: spacing.xl,
   },
-  radioInner: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: '#FF8C42',
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: assessmentColors.text,
+    textAlign: 'center',
+    marginBottom: spacing.lg,
   },
-  skipButton: {
+  description: {
+    fontSize: 16,
+    color: assessmentColors.textSecondary,
+    textAlign: 'center',
+    marginBottom: spacing.xl,
+    lineHeight: 24,
+  },
+  bulletPoints: {
+    alignSelf: 'stretch',
+    marginTop: spacing.lg,
+  },
+  bulletPoint: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    marginBottom: 16,
-    borderRadius: 12,
-    backgroundColor: 'rgba(255, 59, 48, 0.2)',
+    marginBottom: spacing.md,
   },
-  skipText: {
-    color: '#FFFFFF',
+  bulletText: {
     fontSize: 16,
-    fontWeight: '500',
-    marginRight: 8,
-  },
-  skipIcon: {
-    opacity: 0.8,
+    color: assessmentColors.text,
+    marginLeft: spacing.md,
   },
   buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    padding: spacing.lg,
+    paddingBottom: spacing.xl,
   },
-  continueButton: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FF6B35',
-    paddingVertical: 16,
-    borderRadius: 10,
-  },
-  continueButtonDisabled: {
-    opacity: 0.5,
-  },
-  continueButtonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
-    marginRight: 8,
-  },
-}); 
+});

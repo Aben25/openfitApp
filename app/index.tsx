@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet } from 'react-native';
 import { Redirect } from 'expo-router';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
+import { ThemedView } from '@/components/ThemedView';
 
 export default function Index() {
   const { session, loading: authLoading } = useAuth();
@@ -45,9 +46,9 @@ export default function Index() {
   // Show loading indicator while checking status
   if (authLoading || loading) {
     return (
-      <View style={styles.container}>
+      <ThemedView style={styles.container}>
         <ActivityIndicator size="large" color="#FF8C42" />
-      </View>
+      </ThemedView>
     );
   }
 
@@ -58,7 +59,7 @@ export default function Index() {
 
   // Authenticated but needs to complete onboarding
   if (!onboardingCompleted) {
-    return <Redirect href="/(onboarding)/about-you" />;
+    return <Redirect href="/(assessment)" />;
   }
 
   // Fully authenticated and onboarded - go to main app
@@ -68,7 +69,6 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#000000',
     justifyContent: 'center',
     alignItems: 'center',
   },

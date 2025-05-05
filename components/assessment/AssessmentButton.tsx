@@ -1,15 +1,19 @@
-import React from 'react';
+import React from "react";
 import {
   TouchableOpacity,
   ActivityIndicator,
   View,
   StyleProp,
   ViewStyle,
-  TextStyle
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { ThemedText } from '../ThemedText';
-import { assessmentStyles, assessmentColors, spacing } from '../ui/AssessmentStyles';
+  TextStyle,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { ThemedText } from "../ThemedText";
+import {
+  assessmentStyles,
+  assessmentColors,
+  spacing,
+} from "../ui/AssessmentStyles";
 
 interface AssessmentButtonProps {
   title: string;
@@ -19,7 +23,7 @@ interface AssessmentButtonProps {
   icon?: keyof typeof Ionicons.glyphMap;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: "primary" | "secondary" | "outline";
 }
 
 export function AssessmentButton({
@@ -30,18 +34,18 @@ export function AssessmentButton({
   icon,
   style,
   textStyle,
-  variant = 'primary'
+  variant = "primary",
 }: AssessmentButtonProps) {
   // Determine button style based on variant
   const getButtonStyle = () => {
     switch (variant) {
-      case 'secondary':
+      case "secondary":
         return { backgroundColor: assessmentColors.secondary };
-      case 'outline':
+      case "outline":
         return {
-          backgroundColor: 'transparent',
+          backgroundColor: "transparent",
           borderWidth: 1,
-          borderColor: assessmentColors.primary
+          borderColor: assessmentColors.primary,
         };
       default:
         return { backgroundColor: assessmentColors.primary };
@@ -54,7 +58,7 @@ export function AssessmentButton({
         assessmentStyles.continueButton,
         getButtonStyle(),
         disabled && assessmentStyles.continueButtonDisabled,
-        style
+        style,
       ]}
       onPress={onPress}
       disabled={disabled || isLoading}
@@ -63,11 +67,19 @@ export function AssessmentButton({
       {isLoading ? (
         <ActivityIndicator size="small" color={assessmentColors.text} />
       ) : (
-        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-          <ThemedText style={[
-            assessmentStyles.continueButtonText,
-            textStyle
-          ]}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <ThemedText
+            style={[
+              { ...assessmentStyles.continueButtonText, fontWeight: "bold" },
+              textStyle,
+            ]}
+          >
             {title}
           </ThemedText>
 
@@ -92,7 +104,7 @@ interface SkipButtonProps {
 
 export function SkipButton({
   onPress,
-  text = 'Prefer to skip, thanks!'
+  text = "Prefer to skip, thanks!",
 }: SkipButtonProps) {
   return (
     <TouchableOpacity

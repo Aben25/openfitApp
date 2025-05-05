@@ -1,40 +1,45 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
-import { useRouter } from 'expo-router';
-import { AssessmentTemplate } from '@/components/assessment/AssessmentTemplate';
-import { ThemedText } from '@/components/ThemedText';
-import { assessmentColors, spacing } from '@/components/ui/AssessmentStyles';
-import { useAssessment } from '@/context/AssessmentContext';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from "react";
+import { View, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+import { AssessmentTemplate } from "@/components/assessment/AssessmentTemplate";
+import { ThemedText } from "@/components/ThemedText";
+import { assessmentColors, spacing } from "@/components/ui/AssessmentStyles";
+import { useAssessment } from "@/context/AssessmentContext";
+import { Ionicons } from "@expo/vector-icons";
+import FitnessGoalsScreen from "./fitness-goals";
 
 export default function AboutYouScreen() {
   const router = useRouter();
   const { data, updateField } = useAssessment();
-  
-  const [name, setName] = useState(data.display_name || '');
-  const [age, setAge] = useState(data.age ? data.age.toString() : '');
-  const [gender, setGender] = useState(data.gender || '');
-  const [height, setHeight] = useState(data.height ? data.height.toString() : '');
-  const [weight, setWeight] = useState(data.weight ? data.weight.toString() : '');
-  
+
+  const [name, setName] = useState(data.display_name || "");
+  const [age, setAge] = useState(data.age ? data.age.toString() : "");
+  const [gender, setGender] = useState(data.gender || "");
+  const [height, setHeight] = useState(
+    data.height ? data.height.toString() : ""
+  );
+  const [weight, setWeight] = useState(
+    data.weight ? data.weight.toString() : ""
+  );
+
   const genderOptions = [
-    { id: 'male', label: 'Male' },
-    { id: 'female', label: 'Female' },
-    { id: 'other', label: 'Other' }
+    { id: "male", label: "Male" },
+    { id: "female", label: "Female" },
+    { id: "other", label: "Other" },
   ];
-  
+
   const handleContinue = () => {
     // Update assessment data
-    updateField('display_name', name);
-    updateField('age', age ? parseInt(age) : null);
-    updateField('gender', gender as any);
-    updateField('height', height ? parseFloat(height) : null);
-    updateField('weight', weight ? parseFloat(weight) : null);
-    
+    updateField("display_name", name);
+    updateField("age", age ? parseInt(age) : null);
+    updateField("gender", gender as any);
+    updateField("height", height ? parseFloat(height) : null);
+    updateField("weight", weight ? parseFloat(weight) : null);
+
     // Navigate to next screen
-    router.push('/(assessment)/fitness-goals');
+    router.push("/(assessment)/fitness-goals");
   };
-  
+
   return (
     <AssessmentTemplate
       title="About You"
@@ -43,7 +48,7 @@ export default function AboutYouScreen() {
       continueButtonDisabled={!name || !age || !gender || !height || !weight}
       titleStyle={{
         fontSize: 24,
-        fontWeight: 'bold',
+        fontWeight: "bold",
         color: assessmentColors.text,
         marginBottom: spacing.sm,
       }}
@@ -60,7 +65,7 @@ export default function AboutYouScreen() {
             autoCapitalize="words"
           />
         </View>
-        
+
         <View style={styles.inputGroup}>
           <ThemedText style={styles.label}>Age</ThemedText>
           <TextInput
@@ -72,7 +77,7 @@ export default function AboutYouScreen() {
             keyboardType="number-pad"
           />
         </View>
-        
+
         <View style={styles.inputGroup}>
           <ThemedText style={styles.label}>Gender</ThemedText>
           <View style={styles.optionsContainer}>
@@ -81,21 +86,23 @@ export default function AboutYouScreen() {
                 key={option.id}
                 style={[
                   styles.optionButton,
-                  gender === option.id && styles.selectedOption
+                  gender === option.id && styles.selectedOption,
                 ]}
                 onPress={() => setGender(option.id)}
               >
-                <ThemedText style={[
-                  styles.optionText,
-                  gender === option.id && styles.selectedOptionText
-                ]}>
+                <ThemedText
+                  style={[
+                    styles.optionText,
+                    gender === option.id && styles.selectedOptionText,
+                  ]}
+                >
                   {option.label}
                 </ThemedText>
               </TouchableOpacity>
             ))}
           </View>
         </View>
-        
+
         <View style={styles.inputGroup}>
           <ThemedText style={styles.label}>Height (cm)</ThemedText>
           <TextInput
@@ -107,8 +114,8 @@ export default function AboutYouScreen() {
             keyboardType="decimal-pad"
           />
         </View>
-        
-        <View style={styles.inputGroup}>
+
+        {/* <View style={styles.inputGroup}>
           <ThemedText style={styles.label}>Weight (kg)</ThemedText>
           <TextInput
             style={styles.input}
@@ -118,7 +125,7 @@ export default function AboutYouScreen() {
             placeholderTextColor={assessmentColors.textSecondary}
             keyboardType="decimal-pad"
           />
-        </View>
+        </View> */}
       </View>
     </AssessmentTemplate>
   );
@@ -133,7 +140,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
     color: assessmentColors.text,
     marginBottom: spacing.sm,
   },
@@ -147,8 +154,8 @@ const styles = StyleSheet.create({
     borderColor: assessmentColors.border,
   },
   optionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   optionButton: {
     flex: 1,
@@ -156,7 +163,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: spacing.md,
     marginHorizontal: 4,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
     borderColor: assessmentColors.border,
   },
@@ -170,6 +177,6 @@ const styles = StyleSheet.create({
   },
   selectedOptionText: {
     color: assessmentColors.primary,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
